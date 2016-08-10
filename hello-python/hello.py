@@ -2,6 +2,15 @@ import os
 import uuid
 from flask import Flask
 
+#redis stuff
+import os
+import urlparse
+import redis
+import json
+
+rediscloud_service = json.loads(os.environ['VCAP_SERVICES'])['rediscloud'][0]
+credentials = rediscloud_service['credentials']
+r = redis.Redis(host=credentials['hostname'], port=credentials['port'], password=credentials['password'])
 
 app = Flask(__name__)
 my_uuid = str(uuid.uuid1())
@@ -11,16 +20,18 @@ GREEN = "#33CC33"
 COLOR = BLUE
 counter = 0 
 
+#set global counter
+r.set("counter",1)
 
 @app.route('/')
 def hello():
-    global counter
-    counter += 1
-    if counter %2 == 0:
+
+    r.incr("counter")
+    if r.get("counter") %2 == 0:
         COLOR = GREEN
     else:
         COLOR = BLUE
-    
+
     return """
     <html>
     <body bgcolor="{}">
