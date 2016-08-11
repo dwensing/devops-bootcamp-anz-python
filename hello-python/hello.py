@@ -18,16 +18,16 @@ BLUE = "#0099FF"
 GREEN = "#33CC33"
 
 COLOR = BLUE
-counter = 0 
+#counter = 0 
 
 #set global counter
-r.set("counter",1)
+r.set('counter',1)
 
 @app.route('/')
 def hello():
 
-    r.incr("counter")
-    if r.get("counter") %2 == 0:
+    r.incr('counter')
+    if int(r.get('counter')) %2 == 0:
         COLOR = GREEN
     else:
         COLOR = BLUE
@@ -48,7 +48,7 @@ def hello():
 
     </body>
     </html>
-    """.format(COLOR,my_uuid,counter)
+    """.format(COLOR,my_uuid,r.get('counter'))
 
 if __name__ == "__main__":
 	app.run(debug=True,host='0.0.0.0', port=int(os.getenv('PORT', '5000')))
